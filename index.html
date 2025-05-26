@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Candlestick Chart</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+    }
+    #chart {
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <div id="chart"></div>
+
+  <!-- UMD build of Lightweight Charts -->
+  <script src="https://unpkg.com/lightweight-charts@5.0.0/dist/lightweight-charts.standalone.production.js"></script>
+  <script>
+    const chart = LightweightCharts.createChart(document.getElementById('chart'), {
+      layout: {
+        background: { color: '#ffffff' },
+        textColor: '#000000',
+      },
+      grid: {
+        vertLines: { color: '#e0e0e0' },
+        horzLines: { color: '#e0e0e0' },
+      },
+      width: document.getElementById('chart').clientWidth,
+      height: document.getElementById('chart').clientHeight,
+    });
+
+    const candlestickSeries = chart.addSeries(LightweightCharts.CandlestickSeries, {
+      upColor: '#26a69a',
+      downColor: '#ef5350',
+      borderUpColor: '#26a69a',
+      borderDownColor: '#ef5350',
+      wickUpColor: '#26a69a',
+      wickDownColor: '#ef5350',
+    });
+
+    fetch('data.json')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch data.json");
+        }
+        return response.json();
+      })
+      .then(data => {
+        candlestickSeries.setData(data);
+      })
+      .catch(error => {
+        console.error("Error loading candlestick data:", error);
+      });
+
+    window.addEventListener('resize', () => {
+      chart.resize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>
